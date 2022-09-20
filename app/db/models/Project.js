@@ -2,13 +2,16 @@
 
 const mongoose = require('../db');
 
-const ProjectSchema = mongoose.Schema({
-  projectName: {
-    type: String,
-    required: true,
+const ProjectSchema = mongoose.Schema(
+  {
+    projectName: {
+      type: String,
+      required: true,
+    },
+    version: String,
   },
-  version: String,
-}, { timestamps: true });
+  { timestamps: true }
+);
 
 const Project = mongoose.model('project', ProjectSchema);
 

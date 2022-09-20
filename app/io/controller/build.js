@@ -1,25 +1,16 @@
-"use strict";
+'use strict';
+const { createCloudBuildTask } = require('../../models/CloudBuildTask');
 
 module.exports = (app) => {
   class Controller extends app.Controller {
     async index() {
       const { ctx, app } = this;
       const { socket, logger, helper, redis } = ctx;
-      const { parseMsg } = helper;
-      const { id } = socket;
-      const val = await app.redis.get("test");
-      console.log("val", val);
-      // const query = socket.handshake.query;
-      const query = {
-        repo: "https://github.com/wangjiayan/testapp.git",
-        name: "undefined",
-        branch: "null",
-        version: "1.0.0",
-        buildCmd: "undefined",
-        gitServerType: "github",
-        prod: "true",
-      };
-
+      const { id: taskId } = socket;
+      socket.emit(taskId, helper.success('云构建任务链接成功'));
+      const buildTask = await createCloudBuildTask(ctx, app);
+      await prepare(buildTask, socket, helper);
+      // await buildTask.clean();
       // socket.emit(
       //   "build",
       //   parseMsg("download failed", {
@@ -32,3 +23,9 @@ module.exports = (app) => {
   }
   return Controller;
 };
+async function prepare(cloudBuildTask, socket, helper) {
+  const { success } = helper;
+  socket.emit('build', success('开始准备构建'));
+  await cloudBuildTask.prepare();
+  socket.emit('build', success('构建准备工作完成'));
+}

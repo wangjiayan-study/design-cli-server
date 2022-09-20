@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { mongodbUrl, mongodbDbName } = require('../../config/db');
 
-
 mongoose.connect(`${mongodbUrl}/${mongodbDbName}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -10,7 +9,7 @@ mongoose.connect(`${mongodbUrl}/${mongodbDbName}`, {
 const db = mongoose.connection;
 
 // 发生错误
-db.on('error', err => {
+db.on('error', (err) => {
   console.error(err);
 });
 
